@@ -55,7 +55,7 @@ Now that we have a basic understanding of the fundemental math and principles of
 \
 To keep program architecture simple I plan to have each thread prosses seperate Lychrel numbers in ascending order from 5 -> inf (all nubers under 5 cant be Lychrel because they produce single digit sums within first iteration) this alone will allow parralel execution of the sieve testing numbers for Lychrelicy indepentant of each other.\
 \
-Memory consumption will innately grow with passing iterations of each iterative process, to mitigate this I plan for each thread to have memory cap/contstrainsts that when surpased will begin storing the sum locally to disk, only loading in memory required digit needed for incremental sum operations. (constructing the sum per set of 2 digits pairs).\
+Memory consumption will innately grow with passing iterations of each iterative process, to mitigate this I plan for each thread to have memory cap/contstrainsts that when surpased will begin storing the sum locally to disk, only loading in memory required digits needed for incremental sum operations. (constructing the sum per 2 sets of 2 digits pairs).\
 \
 Along with this issue, possible Lychrel Candidates will consume threads indefinetly meaning within time the program will lock all available threads into processing Lychrel Candidates iterations for an undeterminable time (or forever if actually a Lychrel Number), to mitigate this I plan for all iterations past an arbitrary i value to become scheduled on a thread dedicated to possible Candidates freeing previous threads after i iterations.\
 \
