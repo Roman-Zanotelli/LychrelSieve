@@ -16,7 +16,8 @@ https://en.wikipedia.org/wiki/Lychrel_number
 ## What Is a Palindromic Number?
 Before explaining "Lychrel Numbers" or the "Iterative Process" it is crucial to understand Palindromic Numbers.\
 \
-A Number is a palindrome (or is Palindromic) when, similar to the linguistic context, all digits are the same when reveresed;\
+A Number is a palindrome (or is Palindromic) when, similar to the linguistic context, all digits are the same when reveresed.\
+\
 Programatically, this state can be represented as "for all digits at position p < the center_position == the digit at the reversed position end_position - p", when represeted as an array of digits.\
 \
 Some examples are:
