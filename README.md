@@ -1,4 +1,7 @@
 # LychrelSieve
-Program to find Lychrel Candidates
+Sieve Lychrel Candidates
 # Scope
-Write an algorithm in both Rust and Java, Attempt multi-threading across both, and Merge Rust code into JNI lib to compare JNI overhead.
+Write an algorithm in both Rust and Java to find "Lychrel Candidates", Attempt the implementation of multi-threading across both languages.
+
+# Understanding Lychrel Numbers & Candidates
+
