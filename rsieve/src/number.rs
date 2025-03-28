@@ -1,4 +1,4 @@
-use std::os::unix::process;
+use std::{default, os::unix::process};
 
 //I could use a u128 for upto 340282366920938463463374607431768211455 but lychrel candidates will quickly outgrow them
 //Instead im going to use a Vec<u8> assigning each digit as 4 bits 0000 (2^4 = 16 total combinations per digit)
@@ -22,17 +22,28 @@ use std::os::unix::process;
 
 //for comparison u128 (128 bits) holds at max 39 digits, which can be handled by a vec of 19.5 u8s (160 bits) but can extend past the innate hard cap of 340282366920938463463374607431768211455
 //and in addition a u128 can only fully represent 38 digits with the 39th leading digit only being able to reach 3, while my system can fully represent 40 digits within the 160 bits
-struct BigInt{
+pub struct BigMemoryInt{
     data: Vec<u8>
 }
 
-trait Process {
-    fn process_per_bit(&mut self);
+impl Default for BigMemoryInt{
+    fn default() -> Self {
+        Self { data: Default::default() }
+    }
+}
+impl BigMemoryInt{
+    pub fn increment(&mut self){
+        todo!()
+    }
 }
 
-impl Process for BigInt {
-    fn process_per_bit(&mut self) {
-        
+impl crate::iterative_process::Process for BigMemoryInt {
+    fn process_memory_bits(&mut self) -> bool{
+        self.data.process_memory_bits()
+    }
+}
+impl crate::iterative_process::Process for Vec<u8>{
+    fn process_memory_bits(&mut self) -> bool{
         todo!()
     }
 }

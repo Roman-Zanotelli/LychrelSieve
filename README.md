@@ -1,9 +1,7 @@
 # LychrelSieve
 Sieve Lychrel Candidates (Base 10)
 # Scope
-+ Write an algorithm in Rust to find "Lychrel Candidates"
-+ Attempt the implementation of multi-threading.
-+ Compare against a Java implentation and a JNI re-implementation of the rust program (comparing JNI overhead vs Rust optimizations)
++ Write a multi-threaded program to find "Lychrel Candidates"
 # Understanding Lychrel Numbers
 Defining the mathematical concepts of Palindromic Numbers, Lychrel Numbers/Candidates, and the Iterative process as it pertains to the program itself. This will be a simplified overview of the information required to understand and implement the inner workings of this program; Following the order of:
 + "What Is a Palindromic Number?"
