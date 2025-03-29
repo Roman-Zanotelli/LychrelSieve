@@ -51,7 +51,7 @@ The main difference as mentioned briefly before is that a Lychrel Number is a Nu
 # Algorithm/Program Architecture
 Now that we have a basic understanding of the fundemental math and principles of Lychrel Numbers it is important to outline the program and algorithm architecture I plan to implement; This will be a generalized language agnostic overview of how i plan to strucutre this sieve across multiple threads (java or rust).\
 \
-To keep program architecture simple I plan to have each thread prosses seperate Lychrel numbers in ascending order from 5 -> inf (all nubers under 5 cant be Lychrel because they produce single digit sums within first iteration) this alone will allow parralel execution of the sieve testing numbers for Lychrelicy indepentant of each other.\
+To keep program architecture simple I plan to have each thread prosses seperate Lychrel numbers in ascending order from 10 -> inf (all nubers under 10 cant be lychrel numbers in a base 10 system) this alone will allow parralel execution of the sieve testing numbers for Lychrelicy indepentant of each other.\
 \
 Memory consumption will innately grow with passing iterations of each iterative process, to mitigate this I plan for each thread to have memory cap/contstrainsts that when surpased will begin storing the sum locally to disk, only loading in memory required digits needed for incremental sum operations. (constructing the sum per 2 sets of 2 digits pairs).\
 \
@@ -61,3 +61,4 @@ Additional Improvements can be made, for example if N produces a number at any i
 
 # Possible Additions/Modifications
 + Add logic for systems within arbitrary "Base b" instead of just Base 10
++ Add distributed processing
