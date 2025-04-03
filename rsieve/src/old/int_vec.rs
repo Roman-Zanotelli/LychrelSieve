@@ -1,6 +1,6 @@
 //I could use a u128 for upto 340282366920938463463374607431768211455 but lychrel candidates will quickly outgrow them
 //Instead im going to use a Vec<u8> assigning each digit as 4 bits 0000 (2^4 = 16 total combinations per digit)
-//to keep it simple 0000 = 0, 0001 = 1, 0010 = 2, 0011 = 3, 0100 = 4, 0101 = 5, 0110 = 6, 0111 = 7, 1000 = 8, 1001 = 9; this leaves 1010 (ROLL OVER), 1011, 1100, 1101, 1110, 1111
+//to keep it simple 0000 = 0, 0001 = 1, 0010 = 2, 0011 = 3, 0100 = 4, 0101 = 5, 0110 = 6, 0111 = 7, 1000 = 8, 1001 = 9; this leaves 1010 (ROLL OVER), 1011(IGNORE), 1100, 1101, 1110, 1111
 //as command codes for logic such as END-OF-NUMBER, WAIT-UNTIL-AVAILABLE, and other special values for when large numbers need to be saved/read from filesystem rather than in memory
 
 //this structure wil allow simple bit operations under a single digit for example 0000 + 0001 = 0001 = 1 or 0101 + 0100 = 1001 = 9
@@ -26,9 +26,8 @@ const BASE : u32 = 10;
 pub trait BitNumber {
     
     fn increment(&mut self) -> bool; //increments underlying data
-    fn iterate_bits(&mut self) -> (bool, bool); //singles true when palindrome (allows me to run it in a loop easier)
-    fn load_number(&mut self, at: &i128);
-    fn load_string(&mut self, at: &String);
+    fn iterate_bits(&mut self) -> bool; //singles true when palindrome (allows me to run it in a loop easier)
+    fn load_string( at: &String) -> Self;
     fn load_file(&mut self, at : &Path); //load binary file
     fn load_file_as_number(&mut self, at : &Path); //load digit file
     fn write(&self, path : &Path)-> Result<(), ()>; //write number as binary
@@ -50,12 +49,8 @@ impl BitNumber for IntVec{
     fn increment(&mut self) -> bool{
         self.data.increment()
     }
-    fn iterate_bits(&mut self) -> (bool, bool) {
+    fn iterate_bits(&mut self) -> bool {
         self.data.iterate_bits()
-    }
-
-    fn load_number(&mut self, at: &i128) {
-        self.data.load_string(&at.to_string());
     }
 
     fn load_file(&mut self, path : &Path) {
@@ -78,21 +73,28 @@ impl BitNumber for IntVec{
     }
     
     fn load_file_as_number(&mut self, path : &Path) {
-        todo!()
+        self.data.load_file_as_number(path);
     }
     
-    fn load_string(&mut self, at: &String) {
-        self.data.load_string(at);
+    fn load_string(at: &String) -> Self{
+        IntVec { data: Vec::<u8>::load_string(at) }
     }
 }
 
-
+trait VecMem{
+    fn insert_new_digit_mem(&mut self);
+}
+impl VecMem for Vec<u8>{
+    fn insert_new_digit_mem(&mut self) {
+        todo!()
+    }
+}
 impl BitNumber for Vec<u8> {
     fn increment(&mut self) -> bool {
         let len = self.len();
         let mut pin : usize = 0;
-        loop {
-            match self.get_mut(len - 1 - pin){
+        loop { // probably gonna change this
+            match (self.get_mut(len - 1 - pin)){
                 Some(byte) => {
                     if byte.increment(){
                         pin  += 1;
@@ -111,18 +113,22 @@ impl BitNumber for Vec<u8> {
         }
     }
 
-    fn iterate_bits(&mut self) -> (bool, bool) {
-        let len = self.len();
-        for i in 0 .. len{
+    fn iterate_bits(&mut self) -> bool { //returns true if palindrome
+        match self.len(){
+            0 => {
+                return true
+            },
+            1 => {
+                if self.get_mut(0).unwrap().iterate_bits_with_self(){
 
+                }
+                todo!()
+            },
+            len => {
+                todo!()
+            }
         }
-        todo!()
     }
-
-    fn load_number(&mut self, at: &i128) {
-        self.load_string(&at.to_string());
-    }
-
     fn load_file(&mut self, path: &Path) {
         todo!()
     }
@@ -153,29 +159,12 @@ impl BitNumber for Vec<u8> {
         return result;
     }
     
-    fn load_string(&mut self, at: &String) {
+    fn load_string(at: &String) -> Self {
         let mut digits = at.chars().collect::<Vec<char>>();
-        digits.reverse();
-        for reversed_digit_pair in digits.chunks(2){
-            //construct binary representation
-            match (reversed_digit_pair.get(0), reversed_digit_pair.get(1)){
-                (Some(right), Some(left)) =>{
-                    match (&left.to_digit(BASE), &right.to_digit(BASE)){
-                        (Some(left_digit), Some(right_digit)) =>self.insert(0, ((*left_digit as u8) << 4) | *right_digit as u8), //combines the digits in my format (the left digit is shifter 4 to the right 00001001 = 10010000 then adds right digit 10010000 | 00000110 = 10010110)    
-                        (Some(_), None) => panic!("Right Char Invalid: {}", right),
-                        (None, Some(_)) => panic!("Left Char Invalid: {}", left),
-                        (None, None) => panic!("Both Char Invalid: {} {}",left, right),
-                    }
-                }
-                (Some(right), None) => {
-                    match right.to_digit(BASE) {
-                        Some(digit) => self.insert(0, digit as u8),
-                        None => panic!("Invalid Character"),
-                    }
-                }
-                _ => panic!("Chunks didnt work?")
-            }
+        if digits.len() % 2 == 1 {
+            digits.insert(0, '0');
         }
+        digits.chunks(2).map(|chunk| {((chunk[0].to_digit(BASE).unwrap() as u8) << 4) | (chunk[1].to_digit(BASE).unwrap() as u8)}).collect::<Vec<u8>>()
     }
     
     
@@ -196,9 +185,8 @@ impl BitOp for u8{
     fn increment(&mut self) -> bool {
         let mut i : u8 = 0;
         loop {
-            println!("{}", i);
             *self ^= 0b1 << i; //working as intended
-            match (*self & (1 << i) != 0) {
+            match *self & (1 << i) != 0 {
                 true => { 
                     match i % 4 == 1 && *self & (1 << i+2) != 0{
                         true => { //ROLL OVER
@@ -224,7 +212,7 @@ impl BitOp for u8{
     
     fn as_string_of_digits(self) -> String {
         let mut result = "".to_string();
-        for i in (0..128).step_by(4).rev() {
+        for i in (0..8).step_by(4).rev() {
             result = format!("{}{}", result, match ((self >> (i)) & 0b1111) {   
                 0b0000 => "0",
                 0b0001 => "1",
@@ -236,6 +224,8 @@ impl BitOp for u8{
                 0b0111 => "7",
                 0b1000 => "8",
                 0b1001 => "9",
+                0b1010 => "ROLL"
+                0b1011 => "", //blank digit space (no value not even 0)
                 _ => panic!("Woah I Messed Up")
             });
         };
@@ -251,13 +241,23 @@ impl BitOp for u8{
     }
     
     fn iterate_bits_with_self(&mut self) -> bool {
-        match (*self >> 4, (*self << 4) >> 4){
+        let mut res : u8= match (*self >> 4, (*self << 4) >> 4){
             (left, right) => {
-                //I can just add them together like a regular u8 and then process it back into my digit format (and carry any 1's) 
-                
+                left + right
             }
+        };
+        match res {
+            0..10 => {
+                *self = (res << 4) & res;
+                return false;
+            },
+            10..19 =>{
+                res -= 10;
+                *self = ((res + 1) << 4) & res;
+                return true;
+            }
+            _ => todo!("Error unexpected addition with self"),
         }
-        todo!()
     }
     
 }

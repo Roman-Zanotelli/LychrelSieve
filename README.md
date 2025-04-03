@@ -28,7 +28,7 @@ Simply put a Lychrel Number is a number in which a Palindromic result can not ev
 \
 Functionally this can be represented as the ItereativeProcess(N, i) != Palidromic Result for i = 1 -> inf Iterations. \
 \
-Based off my interpretation of the mathematical definition, a Lychrel Number itself may be palindromic, but must still meet the prior conditions of the iterative process.
+Based off my interpretation of the mathematical definition, a Lychrel Number itself may be a palindrome, but must still meet the prior conditions of the iterative process.
 ## What Is the Iterative Process?
 Now that we understand Palindromic Numbers and Lychrel Numbers, it is imperative we understand the "Iterative Process" used to determine whether a number is NOT a Lychrel Number.\
 \
@@ -46,20 +46,4 @@ As stated before this will only determine if a number IS NOT a Lychrel Number, S
 ## Lychrel Number VS. Candidate
 To clarify there are no known Lychrel Numbers in the base 10 system as mentioned before, there are only possible Lychrel Candidates that have been discovered and tested upto an arbitrary i iterations.\
 \
-The main difference as mentioned briefly before is that a Lychrel Number is a Number in which provably cannot produce a palindromic number through the iterative process, while a Lychrel Candidate is a number tested to not produce a palindromic number within 0 -> i iterations but may still converge to palindromic as i -> inf iterations and in which no recognizable pattern occurs proving its Lychrelic nature (in contrast some base 2 numbers have shown to produce patterns proving their Lychrelic nature, for example 10110). 
-
-# Algorithm/Program Architecture(WIP)
-Now that we have a basic understanding of the fundemental math and principles of Lychrel Numbers it is important to outline the program and algorithm architecture I plan to implement; This will be a generalized language agnostic overview of how i plan to strucutre this sieve across multiple threads (java or rust).\
-\
-To keep program architecture simple I plan to have each thread prosses seperate Lychrel numbers in ascending order from 10 -> inf (all nubers under 10 cant be lychrel numbers in a base 10 system) this alone will allow parralel execution of the sieve testing numbers for Lychrelicy indepentant of each other.\
-\
-Memory consumption will innately grow with passing iterations of each iterative process, to mitigate this I plan for each thread to have memory cap/contstrainsts that when surpased will begin storing the sum locally to disk, only loading in memory required digits needed for incremental sum operations. (constructing the sum per 2 sets of 2 digits pairs).\
-\
-Along with this issue, possible Lychrel Candidates will consume threads indefinetly meaning within time the program will lock all available threads into processing Lychrel Candidates iterations for an undeterminable time (or forever if actually a Lychrel Number), to mitigate this I plan for all iterations past an arbitrary i value to become scheduled on a thread dedicated to possible Candidates freeing previous threads after i iterations.\
-\
-Additional Improvements can be made, for example if N produces a number at any iteration that is known to be non-Lychrelic it is guarenteed to become palindromic and all sums produced by a non-Lychrelic N are inherintly non-Lychrelic, meaning that when processing N any sums of the IterativeProcess(N) share the Lychrelity of N. This could be leveraged by using a shared data structure to store non-Lychrelic numbers and their iterations until palindromic; Then during the iterative process for any value N and iteration i if they are ever produced as a resulting sum means we can skip further iterations of the process to the palindromic result with the iterations from N to the palindrome equalling i + sum_iterations_until_palindromic of the stored processed non-Lychrel. Skipping a large bulk of the processing. (if you just want to test if the number is non-lychrelic without the final result or iteration count you can just return true the moment the known non-Lychrelic sum is reached)
-
-# Possible Additions/Modifications (WIP)
-+ Maybe Add logic for systems within arbitrary "Base b" instead of just Base 10
-+ Definetly Add multithreading for a single seed number, this can be done by assigning threads sets of digits with a signal like a channel to communicate to another thread that a 1 needs to be caried at a specific iteration. I belive that if you properly calculate the transformations of the iterations that have passed it is possible to retroactively update a set of digits so that it is the same as if the 1 was carried at the iteration that was missed; This is based on the idea addition is always communitive, and any amount of iterations is just addition. you could use this to allow threads to act completely independent and only stop when they recieve a 1 from a previous digit set (you may also want to halt the thread that signaled but i think since its all addition you can add it at anypoint aslong as its transformations are proper) 
-+ Maybe Add distributed processing, Ive tried to design the program in a way where the only limitation is the resources on the machine running it. If you sync digit operations of large sets of digits you could calculate insanely large iterations of a seed number like 196 through deleating sets of digits to different nodes with each nodes resources instead of just one. This is extremely overkill but would basically be the same as processing a single seed number with multiple threads
+The main difference as mentioned briefly before is that a Lychrel Number is a Number in which provably cannot produce a palindromic number through the iterative process, while a Lychrel Candidate is a number tested to not produce a palindromic number within 0 -> i iterations but may still converge to palindromic as i -> inf iterations and in which no recognizable pattern occurs proving its Lychrelic nature (in contrast some base 2 numbers have shown to produce patterns proving their Lychrelic nature, for example 10110).
