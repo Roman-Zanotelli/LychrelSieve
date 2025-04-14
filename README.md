@@ -1,7 +1,8 @@
 # Scope
 Create a multithreaded sieve for possible lychrel canadites using rust<br>
 Uses Google's Distroless Image<br>
-Uses Docker Compose for easy testing
+Uses Docker Compose for easy testing<br>
+Numbers Compute Concurrently based on CFG
 # Lab Prerequisites
 - Docker
 - Docker-Compose
