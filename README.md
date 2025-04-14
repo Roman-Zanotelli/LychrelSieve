@@ -6,7 +6,8 @@ Another example of a non-lychrel number is 59, 59 + 95 = 154, 154 + 451 = 605, 6
 
 This program by default considers all numbers after 300 iterations as possible Lychrel numbers, this value can be configured (with 0 being infite iterations) but is chosen because the largest known delayed palindrome occurs after 293 iterations.<br><br>
 
-There is no known way to "prove" any number in Base 10 is a Lychrel number, but lychrel numbers have been proved to exist in other bases such as Base 2
+There is no known way to "prove" any number in Base 10 is a Lychrel number, but lychrel numbers have been proved to exist in other bases such as Base 2<br><br>
+Source: https://en.wikipedia.org/wiki/Lychrel_number
 # Scope
 Create a multithreaded sieve for possible lychrel canadites using rust<br>
 Uses Google's Distroless Image<br>
