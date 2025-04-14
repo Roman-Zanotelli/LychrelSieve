@@ -1,6 +1,3 @@
-# WIP
-Currently functional but not complete, compose file has some basic usage configurations but I plan to add more debug/print options as ENV vars for mor descriptive details.<br>
-Additional TODO Listed Below 
 # Scope
 Create a multithreaded sieve for possible lychrel canadites using rust<br>
 Uses Google's Distroless Image<br>
