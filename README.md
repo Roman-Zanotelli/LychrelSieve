@@ -1,5 +1,9 @@
+# WIP
+Currently functional but not complete, compose file has some basic usage configurations but I plan to add more debug/print options as ENV vars for mor descriptive details.
 # Scope
-Create a multithreaded sieve for possible lychrel canadites\n
+Create a multithreaded sieve for possible lychrel canadites using rust\n
+Uses Google's Distroless Image\n
+Uses Docker Compose for easy testing
 # Lab Prerequisites
 - Docker
 - Docker-Compose
