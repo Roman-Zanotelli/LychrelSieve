@@ -1,9 +1,9 @@
-#Scope
+# Scope
 Create a multithreaded sieve for possible lychrel canadites
-#Prerequisites
+# Prerequisites
 + Docker
 + Docker-Compose
-#CFG
+# CFG
 - START_NUMBER: Starting Number
 - START_ITER: Starting Iteration Count (only used for single number)
 - MAX_ITER: Max Amount of iterations before stopping number (0 is infinite)
