@@ -9,11 +9,11 @@ pub mod lychrel_sieve;
 #[tokio::main]
 async fn main() {
     dotenv().ok();
-    let cfg = (env::var("START_NUMBER").unwrap_or("196".to_string()),env::var("START_ITER").unwrap_or("0".to_string()), env::var("MAX_ITER").unwrap_or("0".to_string()), env::var("MAX_NUMBER").unwrap_or("0".to_string()), env::var("MAX_CONCURRENT_SEEDS").unwrap_or("1".to_string()));
+    let cfg = (env::var("START_NUMBER").unwrap_or("10".to_string()),env::var("START_ITER").unwrap_or("0".to_string()), env::var("MAX_ITER").unwrap_or("300".to_string()), env::var("MAX_NUMBER").unwrap_or("2000".to_string()), env::var("MAX_CONCURRENT_SEEDS").unwrap_or("1".to_string()));
     
     match env::var("SINGLE_NUMBER_ONLY").unwrap_or("true".to_string()).parse::<bool>().unwrap(){
         true => SeededSieve::new_start_single(BigInt::from(cfg.0).await, cfg.1.parse::<u128>().unwrap(), cfg.2.parse::<u128>().unwrap()).await,
-        false => MasterSieve::new_start(cfg.0.parse::<u128>().unwrap(), cfg.2.parse::<u128>().unwrap(), cfg.4.parse::<usize>().unwrap()).await,
+        false => MasterSieve::new_start(cfg.0.parse::<u128>().unwrap(), cfg.2.parse::<u128>().unwrap(), cfg.4.parse::<usize>().unwrap(), cfg.3.parse::<u128>().unwrap()).await,
     }
     
     // let test_string :String = "12000700000025339936491".to_owned();

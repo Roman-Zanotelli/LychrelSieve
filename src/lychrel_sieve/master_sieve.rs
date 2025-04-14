@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use futures::future::join_all;
 use tokio::{spawn, sync::{RwLock, Semaphore}};
 
 use crate::number::{int::BigInt, shared_digit_pair::SharedDigitPair};
@@ -10,25 +11,31 @@ pub struct MasterSieve{
     master_seed: u128,
     stop_at: u128,
     max_sieves: usize,
+    max_seed: u128
 }
 struct MasterSeed{ //representation of BigInt used by set sieve to create incremental sieve seeds
     data: Vec<u8>
 }
 
 impl MasterSieve{
-    pub fn new(master_seed: u128, stop_at: u128, max_sieves: usize) -> MasterSieve{
-        MasterSieve { master_seed, stop_at, max_sieves}
+    pub fn new(master_seed: u128, stop_at: u128, max_sieves: usize, max_seed: u128) -> MasterSieve{
+        MasterSieve { master_seed, stop_at, max_sieves, max_seed}
     }
     pub async fn start(&mut self){
         let slots = Arc::new(Semaphore::new(self.max_sieves));
+        let mut handles = Vec::new();
         loop {
             let permit = slots.clone().acquire_owned().await.unwrap();
-            spawn( SeededSieve::new_start( BigInt::from(self.master_seed.to_string()).await, 0, self.stop_at, permit));
+            handles.push(spawn( SeededSieve::new_start( BigInt::from(self.master_seed.to_string()).await, 0, self.stop_at, permit)));
             self.master_seed += 1;
+            if self.master_seed > self.max_seed{
+                break
+            }
         };
+        join_all(handles).await;
     }
-    pub async fn new_start(master_seed: u128, stop_at: u128, max_sieves: usize){
-        MasterSieve::new(master_seed, stop_at, max_sieves).start().await
+    pub async fn new_start(master_seed: u128, stop_at: u128, max_sieves: usize, max_seed: u128){
+        MasterSieve::new(master_seed, stop_at, max_sieves, max_seed).start().await
     }
     
 }
