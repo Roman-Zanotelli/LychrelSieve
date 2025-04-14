@@ -12,7 +12,7 @@ impl Clone for Side{
 }
 impl Clone for Digit{
     fn clone(&self) -> Self {
-        Self { side: self.side.clone(), data: self.data.clone(), digit_place: Arc::new(0) }
+        Self { side: self.side.clone(), data: self.data.clone(), digit_place: Arc::new(*self.digit_place) }
     }
 }
 impl Clone for SharedDigitPair{

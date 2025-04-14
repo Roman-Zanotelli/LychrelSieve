@@ -1,68 +1,46 @@
+use std::{env, u128};
+
+use dotenvy::dotenv;
+use lychrel_sieve::{master_sieve::MasterSieve, sieve::{SeededSieve, SieveFunctionContext}};
+use number::int::BigInt;
+
 pub mod number;
 pub mod lychrel_sieve;
-fn main() {
+#[tokio::main]
+async fn main() {
+    dotenv().ok();
+    let cfg = (env::var("START_NUMBER").unwrap_or("196".to_string()),env::var("START_ITER").unwrap_or("0".to_string()), env::var("MAX_ITER").unwrap_or("0".to_string()), env::var("MAX_NUMBER").unwrap_or("0".to_string()), env::var("MAX_CONCURRENT_SEEDS").unwrap_or("1".to_string()));
+    
+    match env::var("SINGLE_NUMBER_ONLY").unwrap_or("true".to_string()).parse::<bool>().unwrap(){
+        true => SeededSieve::new_start_single(BigInt::from(cfg.0).await, cfg.1.parse::<u128>().unwrap(), cfg.2.parse::<u128>().unwrap()).await,
+        false => MasterSieve::new_start(cfg.0.parse::<u128>().unwrap(), cfg.2.parse::<u128>().unwrap(), cfg.4.parse::<usize>().unwrap()).await,
+    }
+    
+    // let test_string :String = "12000700000025339936491".to_owned();
+    // println!("{}", test_string);
+    // let mut context = SieveFunctionContext::default(); 
+    // let int = BigInt::from(test_string).await;
+    // let mut sieve = SeededSieve::new(int, 0);
+    
+    // loop{
+    //     if sieve.iterate(&mut context).await{
+    //         println!("Iteration {}: {}", sieve.get_it(), sieve.to_digit_string().await);
+    //         break
+    //     }
+    //     println!("Iteration {}: {}", sieve.get_it(), sieve.to_digit_string().await);
 
-
-    let test_string :String = "564".to_owned();
-    println!("{}", test_string);
-    // u8, u16, u32, u64, u128
-    // 00000000 = 0;
-    // 0b0 = 0;
-    // 0b1 = 1;
-    // 1 + 1 = 0;
-
-    // U8
-    // U4 + U4 = U8;
-
-    // 0000 0
-    // 0001 1
-    // 0010 2
-    // 0011 3
-    // 0100 4
-    // 0101 5
-    // 0110 6 
-    // 0111 7 
-    // 0b1000 8
-    // 0b1001 9
-    // 0b1010  
-
-    // 99 != 10011001;
-
-    // 0b10 = 2;
-    // 0b1001 = 9;
-    // 0b1010 = 10;
-    // 0b1 = 00000001;
-    // 0b10 = 00000010 = 2;
-
-    // let mut test = IntVec::load_string(&test_string);
-    // println!("{}",test_string);
-    // // println!("{}",test.as_string());
-    // println!("{}", test.as_string_of_digits());
-    // println!("Testing Increment:");
-    // test.increment();
-    // // println!("{}",test.as_string());
-    // println!("{}", test.as_string_of_digits());
-    // println!("Testing Increment:");
-    // test.increment();
-    // // println!("{}",test.as_string());
-    // println!("{}", test.as_string_of_digits());
-    // test.iterate_bits();
-    // println!("{}", test.as_string_of_digits());
-
-    // for i in 0..15{
-    //     println!("{}", i);
-    //     println!("{}", test.as_string());
-    //     test.increment();
     // }
+    // println!("{}", sieve.to_digit_string().await);
+    // while !sieve.iterate(&mut context).await{
+    //     println!("Iteration: {}, Number: {}", sieve.get_it(), sieve.to_digit_string())
+    // }
+    
+    // let test_delayed = BigInt::from("1000206827388999999095750".to_string()).await;
+    // SeededSieve::new_start_single(test_delayed, 0, u128::MAX - 1).await;
+    // let test_196 = BigInt::from("196".to_string()).await;
+    //SeededSieve::new_start_single(test_196, 0, 1000).await;
 
+    // MasterSieve::new_start(10, 333, 1000).await;
 
-
-    // let mut test2 :u8 = 0b10100000;
-    // println!("{}", test2);
-    // test2 &= !(0b1111 << 4);
-    // println!("{}", test2);
-    // let testu8 : u8 = 0b1111;
-    // let test = (testu8 & !(0b1111)) != 0;
-    // println!("{}",test) 
 
 }
