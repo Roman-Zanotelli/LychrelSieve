@@ -1,6 +1,6 @@
 # WIP
-Currently functional but not complete, compose file has some basic usage configurations but I plan to add more debug/print options as ENV vars for mor descriptive details.<br><br>
-Planning to flush-out README more in the future
+Currently functional but not complete, compose file has some basic usage configurations but I plan to add more debug/print options as ENV vars for mor descriptive details.<br>
+Additional TODO Listed Below 
 # Scope
 Create a multithreaded sieve for possible lychrel canadites using rust<br>
 Uses Google's Distroless Image<br>
@@ -22,6 +22,7 @@ Uses Docker Compose for easy testing
 - Fix Single Number Multi-Threading
 - Commenting
 - Add additional print options
+- Flush Out README
 # About
 Lychrel numbers are numbers that do not become palindromic after any amount of iterations through a specific process of adding it to the reverse of itself.<br><br>
 For example the number 51 in the first iteration would be 51 + 15 = 66, meaning 51 is not a lychrel number.<br><br>
