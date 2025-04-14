@@ -1,0 +1,16 @@
+version: "0.1"
+
+services:
+  lychrel_sieve:
+    build:
+      context: . # path to your Dockerfile
+    image: lychrel_sieve_distroless
+    container_name: lychrel_sieve
+    environment:
+      - START_NUMBER=196
+      - START_ITER=0
+      - MAX_ITER=300
+      - MAX_NUMBER=2000
+      - MAX_CONCURRENT_SEEDS=1
+      - SINGLE_NUMBER_ONLY=true
+
